@@ -1,0 +1,19 @@
+{
+  "skipWebFetchPreflight": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "agent",
+            "if": "Bash(git commit*)",
+            "statusMessage": "检查 CLAUDE.md 和 README.md 是否需要更新...",
+            "timeout": 60,
+            "prompt": "你是一个代码审查助手。用户即将执行 git commit。\n\n请执行以下步骤：\n1. 运行 `git diff --cached --stat` 查看本次提交涉及的文件\n2. 运行 `git diff --cached` 查看具体变更内容\n3. 读取项目根目录的 CLAUDE.md 和 README.md（如果存在）\n4. 判断这些代码变更是否需要更新 CLAUDE.md 或 README.md\n\n如果需要更新，输出 JSON：\n{\"decision\": \"block\", \"reason\": \"本次变更需要更新文档：[具体说明哪个文件需要更新以及原因]\"}\n\n如果不需要更新，输出 JSON：\n{\"decision\": \"allow\"}\n\n只输出 JSON，不要其他内容。"
+          }
+        ]
+      }
+    ]
+  }
+}
