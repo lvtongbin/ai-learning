@@ -22,18 +22,18 @@
 
 ```
 .claude/
-├── agents/          # 职责隔离的子代理
-│   ├── ui-generator.md
-│   └── ui-verifier.md
-├── commands/        # 一键触发的工作流
-│   ├── dev-loop.md
-│   └── gen-page.md
-└── skills/          # SOP 化的最佳实践
-    ├── gen-page.md
-    └── visual-check.md
+├── agents/          # 代理（自主任务）
+│   └── name.md      # 代理说明
+├── commands/        # 命令（手动触发）
+│   └── name.md
+├── skills/          # 技巧
+│   └── name/        # 技巧名称
+│       └── SKILL.md
+├── hooks/            # 钩子
+└── scripts/          # 脚本（尽可能低环境依赖）
 ```
 
-这个目录跟着代码仓库走，进 git，团队每个人 pull 下来就能用。新人入职第一天，不需要读三天文档，直接 `/gen-page` 就能按团队规范生成组件。
+这个目录跟着代码仓库走，进 git，团队每个人 pull 下来就能用，或者生成plugins，全员共享。
 
 ---
 
@@ -263,6 +263,42 @@ AI 写代码 → Playwright 截图 → AI 读截图自我验证 → 自动修正
 - **Claude** 通过 Read 工具读取截图文件，利用多模态能力"看"截图内容
 - AI 对比截图与需求描述，判断 UI 是否符合预期
 - 不符合则修改代码，重新截图，再次验证
+
+---
+
+## 扩展层：Computer Use
+
+Computer Use = 让 AI 像人一样直接操作电脑。
+
+传统 AI 只能回答问题。Computer Use 让 AI 拥有了"手"——看到屏幕、判断下一步、执行点击和输入、观察结果，循环直到任务完成。
+
+### 技术栈
+
+| 层级 | 技术 | 作用 |
+|------|------|------|
+| 底层协议 | [Chrome DevTools Protocol (CDP)](https://chromedevtools.github.io/devtools-protocol/) | 浏览器自动化基础，暴露 WebSocket 控制接口 |
+| 自动化框架 | [Playwright](https://github.com/microsoft/playwright) | 跨浏览器高层 API，自动等待，提供 MCP 服务 |
+| AI 集成层 | [browser-use](https://github.com/browser-use/browser-use)<br>[agent-browser](https://github.com/vercel-labs/agent-browser) | 连接 LLM 与浏览器，DOM 提取替代截图，减少幻觉，提供skills |
+
+```python
+from browser_use import Agent
+from langchain_anthropic import ChatAnthropic
+
+agent = Agent(
+    task="打开 Hacker News，告诉我今天排名第一的文章标题",
+    llm=ChatAnthropic(model="claude-sonnet-4-6"),
+)
+await agent.run()
+```
+
+```
+# 浏览器操作
+
+优先使用agent-browser skill 操作浏览器 安装文档：https://github.com/vercel-labs/agent-browser
+
+```
+
+> 延伸阅读：[OpenAI Computer-Using Agent](https://openai.com/zh-Hans-CN/index/computer-using-agent/)
 
 ---
 
