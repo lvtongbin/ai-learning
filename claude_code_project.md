@@ -84,7 +84,7 @@ Skill 是一份"可操作知识"，本质上就是一个 **SOP**。它具备：
 └── examples/          # 示例集（输入输出样本）
 ```
 
-### Skill 写法
+### Skill 字段说明
 
 - name/description：是什么
 - argument-hint/examples：怎么用
