@@ -253,7 +253,7 @@
   <footer>&copy; 2026 AI 编程培训 · 内容持续更新中</footer>
 
   <script>
-    fetch('claude_code_ project.md')
+    fetch('claude_code_project.md?v=' + Date.now())
       .then(r => {
         if (!r.ok) throw new Error(r.status);
         return r.text();
