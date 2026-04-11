@@ -32,9 +32,3 @@ python3 -m http.server 8080
 
 > 各详情页通过 `fetch` 加载对应 `.md` 文件，需要 HTTP 服务才能正常运行，直接打开 HTML 文件会因跨域限制导致内容加载失败。
 
-## 新增模块
-
-1. 复制 `learn_claude_code.html` 为新页面
-2. 修改页面标题、模块编号、`fetch` 的 `.md` 文件名
-3. 创建对应的 `.md` 内容文件
-4. 在 `index.html` 中将对应卡片的 `<div class="card">` 改为 `<a class="card card--link" href="...">`
