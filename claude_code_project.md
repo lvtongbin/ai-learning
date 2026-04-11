@@ -1,12 +1,12 @@
 # Claude Code 工程化实践
 
-> cc 是一个可编程、可扩展、可组合的 agent 框架。真正的价值不在于会用 AI，而在于能把"用 AI 的方式"本身工程化——让经验可沉淀、可复用、可团队共享。
+> AI编程真正的价值不在于会用 AI，而在于能把"用 AI 的方式"工程化——让经验可沉淀、可复用、可共享。
 
 ---
 
 ## 从 Chat 到 Engineering
 
-当前主流的 AI 辅助编码方式：在对话框中描述需求，获取代码后手动复制粘贴并调整，下次遇到类似需求时重复同样的流程。
+之前主流的 AI 辅助编码方式：在对话框中描述需求，获取代码后手动复制粘贴并调整，下次遇到类似需求时重复同样的流程。
 
 这是 **Chat 模式**。它的问题不是效率低——它确实比手写快。问题是：**经验没有沉淀**。
 
@@ -39,22 +39,22 @@
 
 ## 底层技术：Memory
 
-Memory 是 cc 的持久化上下文机制。`CLAUDE.md` 是项目与 cc 的初始契约——涵盖项目背景、开发规范、代码风格及高风险注意事项。cc 在每次会话启动时自动加载，无需在对话中重复说明。
+Memory 是 Claude Code 的持久化上下文机制。`CLAUDE.md` 是项目与Claude Code签订的初始契约——涵盖项目背景、开发规范、代码风格及高风险注意事项。Claude Code在每次会话启动时自动加载，无需在对话中重复说明。
 
-cc 支持三级 CLAUDE.md，按优先级依次读取：
+三层级 CLAUDE.md，按优先级依次读取：
 
 | 路径 | 作用范围 | 优先级 |
 |------|----------|--------|
-| `~/.claude/CLAUDE.md` | 全局（所有项目共用） | 最先读取 |
+| `~/.claude/CLAUDE.md` | 全局（所有项目共用，但基本不用） | 最先读取 |
 | 项目根目录/`CLAUDE.md` | 项目级（当前项目） | 第二优先 |
 | 项目根目录/`.claude/rules/*.md` | 模块级（特定目录） | 最晚读取 |
 
-有了 Memory，cc 的使用模式就从被动变为主动：
+有了 Memory，Claude Code的使用模式就从被动变为主动：
 
 | 场景 | 被动使用 | 主动驾驭 |
 |------|----------|----------|
 | 跑单测 | 执行单元测试 | 配置 hook，每次修改代码自动执行测试 |
-| 写文档 | 以 Markdown 格式生成指定文档 | 配置 skill，cc 识别文档需求时自动应用文档规范 |
+| 写文档 | 以 Markdown 格式生成指定文档 | 配置 skill，Claude Code 识别文档需求时自动应用文档规范 |
 | code review | 审查指定代码段是否存在问题 | 配置 CR sub agent，每次 MR 自动审查 |
 
 ---
@@ -72,54 +72,6 @@ Skill 是一份"可操作知识"，本质上就是一个 **SOP**。它具备：
 - **工具约束**（`allowed-tools`：过程中能用什么，不能用什么）
 - **自动检查**（`hooks`：完成后自动验证质量）
 
-### 参考型 vs 任务型
-
-| 维度 | 参考型 Skills | 任务型 Skills |
-|------|--------------|--------------|
-| Claude 能自动触发吗？ | 能 | 不能 |
-| 用户能通过 `/name` 触发吗？ | 能 | 能 |
-| `description` 的作用 | 触发条件（Claude 读） | 供用户识别（Claude 不读） |
-| 典型场景 | 知识提供（规范、文档） | 动作执行（commit、deploy） |
-
-若不确定是否需要 Claude 自动触发，建议先评估该操作被自动执行的最坏情况。如果结果存在不可接受的风险，应添加 `disable-model-invocation: true`。
-
-### description 写法
-
-```
-description = [做什么] + [怎么做] + [什么时候用]
-```
-
-示例：
-
-```markdown
-# 代码审查 Skill
-description: 审查代码的质量、安全性和最佳实践。检查错误、性能问题和样式违规。
-当用户请求代码审查、想要获得代码反馈、提到审查变更或询问代码质量时使用。
-```
-
-### 动态上下文注入 `!command`
-
-模型接收到的只是 prompt 文本，它不知道当前在哪个分支、这个分支对应什么需求、本次修改了哪些文件。即使不预注入，模型也会自动调用工具去收集信息——但费 token 和时间。
-
-通过 `!command` 让 skill 在启动时动态注入上下文：
-
-```markdown
-## Current Context (Auto-detected)
-
-Current branch:
-!`git branch --show-current`
-
-Files changed:
-!`git diff --stat origin/main 2>/dev/null || git diff --stat HEAD~3`
-```
-
-| 维度 | 不用 `!command` | 用 `!command` |
-|------|----------------|--------------|
-| Claude 启动时的上下文 | 空白，需多轮探索 | 已注入关键信息 |
-| 首次响应的工具调用数 | 3-5 次（信息收集） | 0-1 次（直接行动） |
-| Token 消耗 | 高 | 低 |
-| 结果一致性 | 低 | 高 |
-
 ### 文件组织模式
 
 当 Skill 有多重类型的资源（知识 + 模板 + 脚本），推荐按功能分类：
@@ -132,11 +84,51 @@ Files changed:
 └── examples/          # 示例集（输入输出样本）
 ```
 
+### Skill 写法
+
+- name/description：是什么
+- argument-hint/examples：怎么用
+- parameters：参数结构
+- steps：执行流程
+- output-format：输出样式
+- subagent/timeout/tags：调度配置
+
+示例：
+
+```markdown
+name: file_write
+description: 向指定文件写入内容
+type: action
+argument-hint: 文件名 + 内容，例如：main.py 写入print("hello")
+input-required: true
+parameters:
+  - name: filename
+    type: string
+    required: true
+  - name: content
+    type: string
+    required: true
+steps:
+  1. 解析文件名和内容
+  2. 检查路径安全性
+  3. 执行写入
+  4. 返回结果
+output-format: text
+tags: [file, write, edit]
+subagent: file_agent
+timeout: 30
+enabled: true
+```
+
+### Skill 怎么写
+
+
+
 ---
 
 ## 扩展层：SubAgents
 
-SubAgents 是 cc 中最易被忽视的能力。它用于独立完成专项任务，最适合**隔离执行**——日志查询、资源检索、需要特定权限的操作。
+SubAgents 是 Claude Code 中最易被忽视的能力。它用于独立完成专项任务，最适合**隔离执行**——日志查询、资源检索、需要特定权限的操作。
 
 本质上是为了解决：**单一 Agent 的上下文、权限与职责无法无限膨胀**的问题。
 
@@ -237,7 +229,7 @@ skills:
 Hooks 在特定事件触发时自动执行，是流程自动化的关键。
 
 ```
-事件：cc 即将执行 git commit 操作
+事件：Claude Code 即将执行 git commit 操作
 hook：自动检查 git staged 文件内是否有安全敏感内容
 结果：发现敏感内容，阻止 commit 并警告
 ```
@@ -339,8 +331,8 @@ Hooks    → 把流程自动化    → 解决"什么时候做"
 | 组件 | 触发方式 | 触发者 | 确定性 |
 |------|----------|--------|--------|
 | Commands | 用户输入 `/xxx` | 用户 | 100% 确定 |
-| Skills | 语义理解 | cc | 概率性 |
-| Sub Agents | 用户指定或 cc 自主决定 | 用户和 cc | 可控 |
+| Skills | 语义理解 | Claude Code | 概率性 |
+| Sub Agents | 用户指定或 Claude Code 自主决定 | 用户和 Claude Code | 可控 |
 | Hooks | 事件触发 | 系统 | 100% 确定 |
 
 三层叠加，构成完整的 AI-Coding 工程化体系。支持版本控制、团队共享与持续迭代优化。
