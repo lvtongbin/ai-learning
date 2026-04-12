@@ -114,6 +114,7 @@ claude --help
 | `/simplify` | 三合一代码审查，同时启动3个angent，分别从代码复用、代码质量和运行效率审查代码 |
 | `/commit` | 生成 commit message 并提交 |
 | `/btw` | 并行提问，让claude在干活的时候插入一个问题 |
+| `/plugin` | 插件管理，添加/列表 |
 | `/export` | 导出对话为markdown |
 
 ### CLAUDE.md 项目配置

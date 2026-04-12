@@ -125,7 +125,7 @@ enabled: true
 
 ### Skill 怎么写
 
-Skill 的质量瓶颈不在格式，在判断力。格式可以让 AI 写，但"这个场景值不值得固化成 Skill"只有人能判断。
+Skill 的质量瓶颈不在格式，在判断力。内容可以让 AI 写（写skill也是一种skill），但"这个场景值不值得固化成 Skill"需要人为（不一定是人）能判断。
 
 **什么值得写成 Skill？三个维度，都是 yes 才写：**
 
@@ -139,7 +139,19 @@ Skill 的质量瓶颈不在格式，在判断力。格式可以让 AI 写，但"
 2. **AI 生成草稿**：根据描述生成完整 Skill 文件
 3. **人审核两处**：`description`（触发条件准不准）+ 正文流程（关键步骤有没有遗漏）
 
-审核 `description` 比审核正文更重要——触发条件错了，再好的正文也没用。
+> 审核 `description` 比审核正文更重要——触发条件错了，再好的正文也没用。
+
+**生产环境共性模式**
+
+1. **职责单一**：每个 skill 只做一件事
+2. **输入输出明确**：每阶段有结构化的 JSON/Markdown 产出
+3. **失败快速**：前置检查不通过则阻断后续步骤
+4. **可观测性**：操作日志、状态文件、监控指标全程可查
+5. **人工确认**：不可逆操作必须用户确认，不自动执行
+
+参考：
+- [skill-creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md)
+- [hermes-agent](https://github.com/NousResearch/hermes-agent)（[skill_manager_tool](https://github.com/NousResearch/hermes-agent/blob/main/tools/skill_manager_tool.py#L654)）
 
 ---
 
@@ -311,7 +323,7 @@ GitHub Actions 监听 MR 创建
 把所有内容串起来，本质上是三个层次：
 
 ```
-Skills   → 把经验 SOP 化   → 解决"怎么做"
+Skills   → 把经验 SOP 化  → 解决"怎么做"
 Agents   → 把职责隔离化    → 解决"谁来做"
 Hooks    → 把流程自动化    → 解决"什么时候做"
 ```

@@ -23,7 +23,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learn Claude Code · AI 编程培训</title>
+  <title>Learn Claude Code · AI 编程交流</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -270,7 +270,7 @@
     <div id="content"><p class="state-msg">LOADING...</p></div>
   </main>
 
-  <footer>&copy; 2026 AI 编程培训 · 内容持续更新中</footer>
+  <footer>&copy; 2026 AI 编程交流 · 内容持续更新中</footer>
 
   <script>
     fetch('learn_claude_code.md')

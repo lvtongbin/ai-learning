@@ -7,7 +7,7 @@
 
 ## 目标
 
-为 AI 编程培训网站创建 Module 03 详情页，内容基于《Claude Code 工程化手册》，帮助学员从"Chat 模式"进入"工程化模式"，系统掌握 Skills、SubAgents、Hooks 的设计与组合。
+为 AI 编程交流网站创建 Module 03 详情页，内容基于《Claude Code 工程化手册》，帮助学员从"Chat 模式"进入"工程化模式"，系统掌握 Skills、SubAgents、Hooks 的设计与组合。
 
 ---
 
@@ -60,7 +60,7 @@
 ## HTML 详情页
 
 复用 `learn_claude_code.html` 结构，改动：
-- `<title>`：`Claude Code 工程化实践 · AI 编程培训`
+- `<title>`：`Claude Code 工程化实践 · AI 编程交流`
 - `.module-label`：`MODULE · 03`
 - `fetch` 路径：`claude_code_ project.md`
 
