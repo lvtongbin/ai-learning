@@ -53,7 +53,7 @@ Harness Engineering是指在 AI 系统中，除模型本身外所有决定系统
 
 ---
 
-## 三、成熟 Harness 的六层架构
+## 三、Harness 的六层架构
 
 ### （一）工具层（Tooling Layer）
 
@@ -72,7 +72,7 @@ Harness Engineering是指在 AI 系统中，除模型本身外所有决定系统
 
 **核心功能**：实现 Agent 持久的记忆和知识存储，解决 AI 短期记忆不足的问题。
 
-核心实践：采用 AGENTS.md 导航地图 + 结构化 `docs/` 目录的模式，AGENTS.md 作为"索引"，`docs/` 目录存储详细知识，同时将文档纳入版本控制和自动化校验。
+核心实践：有价值，采用 AGENTS.md 导航地图 + 结构化 `docs/` 目录的模式，AGENTS.md 作为"索引"，`docs/` 目录存储详细知识，同时将文档纳入版本控制和自动化校验。
 
 ### （三）上下文管理（Context Management）
 
